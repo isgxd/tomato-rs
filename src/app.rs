@@ -234,6 +234,10 @@ impl App {
 
         Subscription::batch([time_event, mouse_event])
     }
+
+    pub fn theme(&self) -> iced::Theme {
+        iced::theme::Theme::Dark
+    }
 }
 
 impl Title<App> for App {
