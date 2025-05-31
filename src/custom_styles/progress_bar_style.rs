@@ -2,7 +2,7 @@ use iced::{Background, Color, Theme, border, widget::progress_bar::Style};
 
 /// 警告样式。
 pub fn progress_warning(_theme: &Theme) -> Style {
-    styled(Color::from_rgb(1.0, 1.0, 0.0))
+    styled(Color::from_rgb(0.52, 0.51, 0.3))
 }
 
 /// 成功样式。
