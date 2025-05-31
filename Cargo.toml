@@ -1,0 +1,14 @@
+[package]
+name = "tomato"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+iced = { version = "0.13", features = ["svg", "smol", "image"] }
+
+[profile.release]
+opt-level = "z"   # 优化大小而非速度
+lto = true        # 链接时优化
+codegen-units = 1 # 减少代码生成单元以提高优化
+strip = true      # 移除符号信息
+panic = "abort"   # 使用 abort 而非 unwind
