@@ -5,7 +5,12 @@ edition = "2024"
 build = "build.rs"
 
 [dependencies]
-iced = { version = "0.13", default-features = false, features = ["svg", "smol", "image", "tiny-skia"] }
+iced = { version = "0.13", default-features = false, features = [
+    "svg",
+    "smol",
+    "image",
+    "tiny-skia",
+] }
 
 [profile.release]
 opt-level = "s"   # 优化大小而非速度
