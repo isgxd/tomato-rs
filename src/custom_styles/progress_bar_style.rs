@@ -1,4 +1,4 @@
-use iced::{Background, Color, Theme, border, widget::progress_bar::Style};
+use iced::{Color, Theme, border, widget::progress_bar::Style};
 
 /// 警告样式。
 pub fn progress_warning(_theme: &Theme) -> Style {
@@ -19,10 +19,10 @@ pub fn progress_danger(theme: &Theme) -> Style {
     styled(palette.danger.base.color)
 }
 
-fn styled(bar: impl Into<Background>) -> Style {
+fn styled(bar: Color) -> Style {
     Style {
         background: Color::TRANSPARENT.into(),
         bar: bar.into(),
-        border: border::rounded(2),
+        border: border::rounded(2).color(bar).width(1),
     }
 }
