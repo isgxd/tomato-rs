@@ -57,96 +57,35 @@ impl Default for App {
 impl App {
     pub fn view(&self) -> Element<Message> {
         let title_bar = widget::column![
-            container(widget::row![
-                container(with_tooltip(
-                    widget::button(top_icon(14.0, self.is_topmost))
-                        .style(|t, s| top_style(t, s, self.is_topmost))
-                        .padding(3.0)
-                        .on_press(Message::Topmost(self.is_topmost))
-                        .into(),
-                    if self.is_topmost {
-                        "Cancel Always On Top"
-                    } else {
-                        "Always On Top"
-                    }
-                ))
-                .padding(padding::right(3.0)),
-                with_tooltip(
-                    widget::button(close_icon(14.0))
-                        .style(close_style)
-                        .padding(3.0)
-                        .on_press(Message::ExitApp)
-                        .into(),
-                    "Close"
-                )
-            ])
-            .width(Length::Fill)
-            .align_x(Horizontal::Right),
-            container(widget::row![
+            widget::row![self.topmost_button(), self.close_button()],
+            widget::row![
                 container(text(content_label(&self.state)).size(12))
-                    .padding(padding::right(1).bottom(1))
-                    .height(Length::Fill)
-                    .align_y(Vertical::Bottom),
-                container(text(content(self.remaining_seconds)).size(14))
-                    .height(Length::Fill)
-                    .align_y(Vertical::Bottom),
-            ])
-            .width(Length::Fill)
-            .align_x(Horizontal::Right)
-        ];
+                    .padding(padding::right(1).bottom(1)),
+                text(content(self.remaining_seconds)).size(14),
+            ]
+            .height(Length::Fill)
+            .align_y(Vertical::Bottom)
+        ]
+        .width(Length::Fill)
+        .align_x(Horizontal::Right);
 
-        let main_command = widget::row![with_tooltip(
-            button(reset_icon(14.0))
-                .style(trans_style)
-                .on_press(Message::Reset)
-                .into(),
-            "Reset"
-        )]
-        .push(match self.state {
-            // 休息状态下，显示工作按钮
-            TimerState::Resting => container(with_tooltip(
-                button(work_icon(14.0))
-                    .on_press(Message::Work)
-                    .style(trans_style)
-                    .into(),
-                "Work",
-            ))
-            .padding(padding::left(1.0)),
+        let main_command = widget::row![self.reset_button()]
+            .push(match self.state {
+                // 休息状态下，显示工作按钮
+                TimerState::Resting => container(self.work_button()).padding(padding::left(1.0)),
 
-            // 暂停状态下，显示继续按钮
-            TimerState::Paused => container(with_tooltip(
-                button(play_icon(14.0))
-                    .on_press(Message::Work)
-                    .style(trans_style)
-                    .into(),
-                "Work",
-            ))
-            .padding(padding::left(1.0)),
+                // 暂停状态下，显示继续按钮
+                TimerState::Paused => container(self.play_button()).padding(padding::left(1.0)),
 
-            // 工作状态下，显示暂停按钮
-            TimerState::Working => container(with_tooltip(
-                button(pause_icon(14.0))
-                    .style(trans_style)
-                    .on_press(Message::Pause)
-                    .into(),
-                "Pause",
-            ))
-            .padding(padding::left(1.0)),
-        })
-        .push_maybe(if matches!(self.state, TimerState::Resting) {
-            None
-        } else {
-            // 工作和暂停状态下，显示休息按钮
-            let rest_button = container(with_tooltip(
-                button(rest_icon(14.0))
-                    .style(trans_style)
-                    .on_press(Message::Rest)
-                    .into(),
-                "Rest",
-            ))
-            .padding(padding::left(1.0));
-            Some(rest_button)
-        });
+                // 工作状态下，显示暂停按钮
+                TimerState::Working => container(self.pause_button()).padding(padding::left(1.0)),
+            })
+            .push_maybe(if matches!(self.state, TimerState::Resting) {
+                None
+            } else {
+                // 工作和暂停状态下，显示休息按钮
+                Some(container(self.rest_button()).padding(padding::left(1.0)))
+            });
 
         let command =
             container(widget::stack![widget::center(main_command), title_bar]).style(|t| {
@@ -165,8 +104,8 @@ impl App {
                 .style(|t| progress_style(t, &self.state, self.remaining_seconds)),
             container(widget::row![
                 container(text(content_label(&self.state)).size(20))
-                    .padding(padding::right(10.0))
-                    .center_y(Length::Fill),
+                    .center_y(Length::Fill)
+                    .padding(padding::right(10.0)),
                 container(text(content(self.remaining_seconds)).size(24)).center_y(Length::Fill),
             ])
             .center_x(Length::Fill)
@@ -236,6 +175,82 @@ impl App {
 
     pub fn theme(&self) -> iced::Theme {
         iced::theme::Theme::Dark
+    }
+
+    fn topmost_button(&self) -> Element<'_, Message> {
+        with_tooltip(
+            widget::button(top_icon(14.0, self.is_topmost))
+                .style(|t, s| top_style(t, s, self.is_topmost))
+                .padding(3.0)
+                .on_press(Message::Topmost(self.is_topmost))
+                .into(),
+            if self.is_topmost {
+                "Cancel Always On Top"
+            } else {
+                "Always On Top"
+            },
+        )
+    }
+
+    fn close_button(&self) -> Element<'_, Message> {
+        with_tooltip(
+            widget::button(close_icon(14.0))
+                .style(close_style)
+                .padding(3.0)
+                .on_press(Message::ExitApp)
+                .into(),
+            "Close",
+        )
+    }
+
+    fn reset_button(&self) -> Element<'_, Message> {
+        with_tooltip(
+            button(reset_icon(14.0))
+                .style(trans_style)
+                .on_press(Message::Reset)
+                .into(),
+            "Reset",
+        )
+    }
+
+    fn work_button(&self) -> Element<'_, Message> {
+        with_tooltip(
+            button(work_icon(14.0))
+                .on_press(Message::Work)
+                .style(trans_style)
+                .into(),
+            "Work",
+        )
+    }
+
+    fn play_button(&self) -> Element<'_, Message> {
+        with_tooltip(
+            button(play_icon(14.0))
+                .on_press(Message::Work)
+                .style(trans_style)
+                .into(),
+            "Work",
+        )
+    }
+
+    fn pause_button(&self) -> Element<'_, Message> {
+        with_tooltip(
+            button(pause_icon(14.0))
+                .style(trans_style)
+                .on_press(Message::Pause)
+                .into(),
+            "Pause",
+        )
+    }
+
+    fn rest_button(&self) -> Element<'_, Message> {
+        with_tooltip(
+            button(rest_icon(14.0))
+                .style(trans_style)
+                .on_press(Message::Rest)
+                .into(),
+            "Rest",
+        )
     }
 }
 
