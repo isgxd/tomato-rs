@@ -217,7 +217,6 @@ impl App {
                 } else {
                     REST_SECONDS
                 };
-                self.state = TimerState::Working;
                 Task::none()
             }
             _ => Task::none(),
