@@ -1,1 +1,4 @@
 /target
+
+# 忽略 exe 文件
+*.exe
