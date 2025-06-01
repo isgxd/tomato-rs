@@ -15,7 +15,7 @@ fn main() {
         .window(window::Settings {
             icon: Some(icon),
             decorations: false,
-            size: [230.0, 45.0].into(),
+            size: [230.0, 40.0].into(),
             position: window::Position::Centered,
             ..Default::default()
         })
