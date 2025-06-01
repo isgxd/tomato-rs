@@ -261,10 +261,10 @@ impl Title<App> for App {
 }
 
 fn content_label(is_working: &TimerState) -> &str {
-    if matches!(is_working, TimerState::Working) {
-        "Work"
-    } else {
-        "Rest"
+    match is_working {
+        TimerState::Working => "Work",
+        TimerState::Resting => "Rest",
+        TimerState::Paused => "Paused",
     }
 }
 
