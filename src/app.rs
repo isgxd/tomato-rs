@@ -271,8 +271,11 @@ fn content_label(is_working: &TimerState) -> &str {
 fn content(seconds: i32) -> String {
     let seconds = seconds.abs();
 
-    let minute = seconds / 60;
+    let mut minute = seconds / 60;
     let second = seconds % 60;
+    if minute >= 99 {
+        minute = 99;
+    }
     format!("{}:{:02}", minute, second)
 }
 
