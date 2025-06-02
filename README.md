@@ -8,4 +8,4 @@ cargo run
 
 ## 截图
 
-![番茄钟应用截图](screenshot\preview.png)
+![番茄钟应用截图](screenshot/preview.png)
